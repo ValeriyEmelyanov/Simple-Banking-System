@@ -1,5 +1,6 @@
 package banking.model;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -13,12 +14,12 @@ public class Model {
     private final Random random = new Random();
 
     public Account createAccount() {
-        int checksum = 1;
         long cardNumber = 0;
         do {
-            cardNumber = INN * 10_000_000_000L +
-                    random.nextInt(CARD_NUMBER_RANGE + 1) * 10L +
-                    checksum;
+            cardNumber = INN * 1_000_000_000L +
+                    random.nextInt(CARD_NUMBER_RANGE + 1);
+            int checksum = getChecksum(cardNumber);
+            cardNumber = cardNumber * 10L + checksum;
         } while (accounts.containsKey(cardNumber));
 
         int pin = random.nextInt(PIN_RANGE + 1);
@@ -26,6 +27,42 @@ public class Model {
         accounts.put(cardNumber, account);
 
         return account;
+    }
+
+    private int getChecksum(long cardNumber) {
+        int[] digits = convertCardNumberToDigitsArray(cardNumber);
+
+        // Luhn Algorithm in action
+
+        // Drop the last digit - already without the last digit
+
+        // Multiply odd digits by 2
+        for (int i = 0; i < digits.length; i++) {
+            if ((i + 1) % 2 == 1) {
+                digits[i] *= 2;
+            }
+        }
+
+        // Substract 9 to numbers over 9
+        for (int i = 0; i < digits.length; i++) {
+            if (digits[i] > 9) {
+                digits[i] -= 9;
+            }
+        }
+
+        // Add all numbers -> get checksum
+        int sum = Arrays.stream(digits).sum();
+        return (10 - sum % 10) % 10;
+    }
+
+    private int[] convertCardNumberToDigitsArray(long cardNumber) {
+        final int len = 15;
+        int[] digits = new int[len];
+        for (int i = 0; i < len; i++) {
+            digits[len - 1 - i] = (int) (cardNumber % 10L);
+            cardNumber /= 10;
+        }
+        return digits;
     }
 
     public Account login(long cardNumber, int pin) {
