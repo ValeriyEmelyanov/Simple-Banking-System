@@ -1,27 +1,25 @@
 package banking.model;
 
 public class Account {
-    private long cardNumber;
-    private int pin;
+    private final String cardNumber;
+    private String pin;
+    private int balance;
 
-    public Account(long cardNumber, int pin) {
+    public Account(String cardNumber, String pin) {
         this.cardNumber = cardNumber;
         this.pin = pin;
+        this.balance = 0;
     }
 
-    public long getCardNumber() {
+    public String getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(int cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    public int getPin() {
+    public String getPin() {
         return pin;
     }
 
-    public void setPin(int pin) {
-        this.pin = pin;
+    public int getBalance() {
+        return balance;
     }
 }

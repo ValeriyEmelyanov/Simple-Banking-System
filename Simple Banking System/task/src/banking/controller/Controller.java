@@ -10,11 +10,11 @@ public class Controller {
     private final Scanner scanner = new Scanner(System.in);
     private final ConsoleView view = new ConsoleView();
     private final Model model = new Model();
-    private boolean logged = false;
+    private Account curAccount = null;
 
     public void run() {
         while (true) {
-            view.menu(logged);
+            view.menu(curAccount != null);
             String choice = scanner.nextLine();
 
             if ("0".equals(choice)) {
@@ -23,18 +23,7 @@ public class Controller {
                 return;
             }
 
-            if (logged) {
-                switch (choice) {
-                    case "1":
-                        balance();
-                        break;
-                    case "2":
-                        logout();
-                        break;
-                    default:
-                        view.message("Invalid input. Try again");
-                }
-            } else {
+            if (curAccount == null) {
                 switch (choice) {
                     case "1":
                         createAccount();
@@ -43,7 +32,18 @@ public class Controller {
                         login();
                         break;
                     default:
-                        view.message("Invalid input. Try again");
+                        view.message("\nInvalid input. Try again\n");
+                }
+            } else {
+                switch (choice) {
+                    case "1":
+                        balance();
+                        break;
+                    case "2":
+                        logout();
+                        break;
+                    default:
+                        view.message("\nInvalid input. Try again\n");
                 }
             }
         }
@@ -53,32 +53,31 @@ public class Controller {
         Account newAccount = model.createAccount();
         view.message(String.format("\n" +
                         "Your card has been created\n" +
-                        "Your card number:\n%d\n" +
-                        "Your card PIN:\n%d\n",
+                        "Your card number:\n%s\n" +
+                        "Your card PIN:\n%s\n",
                 newAccount.getCardNumber(),
                 newAccount.getPin()));
     }
 
     private void login() {
         view.message("\nEnter your card number:");
-        long cardNumber = Long.parseLong(scanner.nextLine());
+        String cardNumber = scanner.nextLine();
         view.message("Enter your PIN:");
-        int pin = Integer.parseInt(scanner.nextLine());
-        Account account = model.login(cardNumber, pin);
-        if (account == null) {
+        String pin = scanner.nextLine();
+        curAccount = model.login(cardNumber, pin);
+        if (curAccount == null) {
             view.message("\nWrong card number or PIN!\n");
         } else {
-            logged = true;
             view.message("\nYou have successfully logged in!\n");
         }
     }
 
     private void balance() {
-        view.message("\nBalance: 0\n");
+        view.message(String.format("\nBalance: %d\n", curAccount.getBalance()));
     }
 
     private void logout() {
-        logged = false;
+        curAccount = null;
         view.message("\nYou have successfully logged out!\n");
     }
 }

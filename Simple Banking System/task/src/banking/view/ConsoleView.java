@@ -10,7 +10,7 @@ public class ConsoleView {
         String menuLogged = "" +
                 "1. Balance\n" +
                 "2. Log out\n" +
-                "0. Exit\n";
+                "0. Exit";
         System.out.println(logged ? menuLogged : menuNotLogged);
     }
 

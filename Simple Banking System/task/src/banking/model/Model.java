@@ -10,19 +10,19 @@ public class Model {
     private static final int CARD_NUMBER_RANGE = 999_999_999;
     private static final int PIN_RANGE = 9_999;
 
-    private final Map<Long, Account> accounts = new HashMap<>();
+    private final Map<String, Account> accounts = new HashMap<>();
     private final Random random = new Random();
 
     public Account createAccount() {
-        long cardNumber = 0;
+        String cardNumber;
         do {
-            cardNumber = INN * 1_000_000_000L +
+            long num = INN * 1_000_000_000L +
                     random.nextInt(CARD_NUMBER_RANGE + 1);
-            int checksum = getChecksum(cardNumber);
-            cardNumber = cardNumber * 10L + checksum;
+            int checksum = getChecksum(num);
+            cardNumber = String.valueOf(num * 10L + checksum);
         } while (accounts.containsKey(cardNumber));
 
-        int pin = random.nextInt(PIN_RANGE + 1);
+        String pin = String.valueOf(random.nextInt(PIN_RANGE + 1));
         Account account = new Account(cardNumber, pin);
         accounts.put(cardNumber, account);
 
@@ -65,13 +65,13 @@ public class Model {
         return digits;
     }
 
-    public Account login(long cardNumber, int pin) {
+    public Account login(String cardNumber, String pin) {
         Account account = accounts.get(cardNumber);
         if (account == null) {
             return null;
         }
 
-        if (account.getPin() == pin) {
+        if (account.getPin().equals(pin)) {
             return account;
         }
 
