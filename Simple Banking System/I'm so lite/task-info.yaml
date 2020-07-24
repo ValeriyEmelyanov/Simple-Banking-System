@@ -1,17 +1,6 @@
 type: edu
 custom_name: stage3
 files:
-- name: src/banking/Main.java
-  visible: true
-  text: |
-    package banking;
-
-    public class Main {
-        public static void main(String[] args) {
-            System.out.println("Hello World!");
-        }
-    }
-  learner_created: false
 - name: test/SimpleBankSystemTest.java
   visible: false
   text: |
@@ -507,6 +496,24 @@ files:
         }
     }
   learner_created: false
+- name: src/banking/Main.java
+  visible: true
+  text: |
+    package banking;
+
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println("Hello World!");
+        }
+    }
+  learner_created: false
+- name: card.s3db
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/93/stages/517/implement
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Congratulations! Continue on <a href="https://hyperskill.org/projects/93/stages/517/implement">JetBrains
+    Academy</a>
+  time: Thu, 23 Jul 2020 14:55:16 UTC
+record: 2

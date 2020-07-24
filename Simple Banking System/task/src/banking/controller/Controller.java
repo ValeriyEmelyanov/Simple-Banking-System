@@ -1,16 +1,23 @@
 package banking.controller;
 
-import banking.model.Account;
+import banking.entities.Account;
+import banking.service.AccountService;
 import banking.view.ConsoleView;
-import banking.model.Model;
 
 import java.util.Scanner;
 
 public class Controller {
-    private final Scanner scanner = new Scanner(System.in);
-    private final ConsoleView view = new ConsoleView();
-    private final Model model = new Model();
+    private final Scanner scanner;
+    private final ConsoleView view;
+    private final AccountService service;
+
     private Account curAccount = null;
+
+    public Controller(String filename) {
+        this.scanner = new Scanner(System.in);
+        this.view = new ConsoleView();
+        this.service = new AccountService(filename);
+    }
 
     public void run() {
         while (true) {
@@ -50,7 +57,11 @@ public class Controller {
     }
 
     private void createAccount() {
-        Account newAccount = model.createAccount();
+        Account newAccount = service.createAccount();
+        if (newAccount == null) {
+            view.message("An error occurred when creating the account.");
+            return;
+        }
         view.message(String.format("\n" +
                         "Your card has been created\n" +
                         "Your card number:\n%s\n" +
@@ -64,7 +75,7 @@ public class Controller {
         String cardNumber = scanner.nextLine();
         view.message("Enter your PIN:");
         String pin = scanner.nextLine();
-        curAccount = model.login(cardNumber, pin);
+        curAccount = service.login(cardNumber, pin);
         if (curAccount == null) {
             view.message("\nWrong card number or PIN!\n");
         } else {
