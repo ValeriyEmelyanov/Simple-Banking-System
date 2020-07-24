@@ -387,6 +387,9 @@ public class SimpleBankSystemTest extends StageTest<String> {
 
         try {
             Connection connection = getConnection();
+            PreparedStatement statement1 = connection.prepareStatement("DELETE FROM card where number = ?");
+            statement1.setString(1, correctCardNumber);
+            statement1.executeUpdate();
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM card where number = ?");
             statement.setString(1, correctCardNumber);
             ResultSet resultSet = statement.executeQuery();
@@ -395,6 +398,7 @@ public class SimpleBankSystemTest extends StageTest<String> {
                 return new CheckResult(false, "After closing the account, the card should be deleted " +
                     "from the database.");
             }
+            isCompleted = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }

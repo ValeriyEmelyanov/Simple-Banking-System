@@ -29,9 +29,7 @@ public class AccountService {
             cardNumber = String.valueOf(num * 10L + checksum);
 
             try {
-                if (dao.checkCardNumber(cardNumber)) {
-                    exit = true;
-                }
+                exit = !dao.checkCardNumber(cardNumber);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
                 return null;
@@ -100,5 +98,53 @@ public class AccountService {
             return account;
         }
         return null;
+    }
+
+    public boolean addIncome(Account account, int sum) {
+        try {
+            int newBalance = dao.addIncome(account.getCardNumber(), sum);
+            if (newBalance < 0) {
+                return false;
+            }
+
+            account.setBalance(newBalance);
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean checkCardNumberLuhn(String cardNumber) {
+        long number = Long.parseLong(cardNumber.trim());
+        int checksum = getChecksum(number / 10);
+        return checksum == number % 10;
+    }
+
+    public boolean checkCardNumber(String cardNumber) {
+        try {
+            return dao.checkCardNumber(cardNumber);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean doTransfer(Account account, String cardNumberTo, int sum) {
+        try {
+            return dao.doTransfer(account, cardNumberTo, sum);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean closeAccount(Account account) {
+        try {
+            return dao.deleteByCardNumber(account.getCardNumber());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
     }
 }

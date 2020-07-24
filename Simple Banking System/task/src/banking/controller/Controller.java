@@ -47,12 +47,75 @@ public class Controller {
                         balance();
                         break;
                     case "2":
+                        addIncome();
+                        break;
+                    case "3":
+                        doTransfer();
+                        break;
+                    case "4":
+                        closeAccount();
+                        break;
+                    case "5":
                         logout();
                         break;
                     default:
                         view.message("\nInvalid input. Try again\n");
                 }
             }
+        }
+    }
+
+    private void closeAccount() {
+        if (service.closeAccount(curAccount)) {
+            view.message("\nThe account has been closed!\n");
+            curAccount = null;
+        } else {
+            view.message("\nThe account has not been closed! Try again!\n");
+        }
+    }
+
+    private void doTransfer() {
+        view.message("\nTransfer\nEnter card number:");
+        String cardNumberTo = scanner.nextLine();
+
+        if (curAccount.getCardNumber().equals(cardNumberTo)) {
+            view.message("You can't transfer money to the same account!\n");
+            return;
+        }
+
+        if (!service.checkCardNumberLuhn(cardNumberTo)) {
+            view.message("Probably you made mistake in the card number. Please try again!\n");
+            return;
+        }
+
+        if (!service.checkCardNumber(cardNumberTo)) {
+            view.message("Such a card does not exist.");
+            return;
+        }
+
+        view.message("Enter how much money you want to transfer:");
+        int sum = Integer.parseInt(scanner.nextLine());
+
+        if (service.doTransfer(curAccount, cardNumberTo, sum)) {
+            view.message("Success!\n");
+        } else {
+            if (sum > curAccount.getBalance()) {
+                view.message("Not enough money!\n");
+            } else {
+                view.message("Transfer failed. Try again.\n");
+            }
+            return;
+        }
+    }
+
+    private void addIncome() {
+        view.message("\nEnter income:");
+        int sum = Integer.parseInt(scanner.nextLine());
+
+        if (service.addIncome(curAccount, sum)) {
+            view.message("Income was added!\n");
+        } else {
+            view.message("Income was not added! Try again!\n");
         }
     }
 

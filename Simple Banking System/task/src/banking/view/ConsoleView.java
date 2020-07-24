@@ -9,7 +9,10 @@ public class ConsoleView {
                 "0. Exit";
         String menuLogged = "" +
                 "1. Balance\n" +
-                "2. Log out\n" +
+                "2. Add income\n" +
+                "3. Do transfer\n" +
+                "4. Close account\n" +
+                "5. Log out\n" +
                 "0. Exit";
         System.out.println(logged ? menuLogged : menuNotLogged);
     }
